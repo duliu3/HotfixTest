@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "cn.gowild.hotfixtest"
+        minSdkVersion 15
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+task makeJar(type: org.gradle.api.tasks.bundling.Jar) {
+//指定生成的jar名称
+    baseName 'fixclass'
+//从哪里打包class文件
+    from('build/intermediates/classes/debug/cn/gowild/hotfixtest/')
+//打包到jar后的目录结构
+    into('cn/gowild/hotfixtest/')
+// //include ,exclude参数来设置过滤
+//去掉不需要打包的目录和文件
+    exclude('MainActivity.class', 'FixEngine.class', 'BuildConfig.class', 'R.class', 'BuildConfig.class')
+// 去掉R$开头的文件
+    exclude { it.name.startsWith('R$') }
+}
+//makeJar.dependsOn(clearJar, build)
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
